@@ -1,0 +1,9 @@
+{
+  "threshold": "${threshold}",
+  "parameters": {
+    "nik": "${nik}",
+    "phone_no": "${phone_no}",
+    "email": "${email}",
+    "face_image": "${face_image}"
+  }
+}

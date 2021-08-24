@@ -2,11 +2,12 @@
 Feature: Perform demographic verification of a person with Dukcapil
 
   Background:
-    Given Caller presents a valid OAuth2 token
-    And Mock is enabled on the IdVerify Service
+    Given caller presents a valid OAuth2 token
+    And mock is enabled on the IdVerify Service
+    And product id is "bea087ed-379a-4952-8173-67cd18b4471d"
 
-  Scenario: Perform demographic validation for valid credentials
-    Given a person with details
+  Scenario: Perform demographic verification with valid credentials
+    Given a person with demographic details
       | nik       | 3174082212800007 |
       | full_name | Romi Gunawan     |
       | dob       | 22/12/1988       |

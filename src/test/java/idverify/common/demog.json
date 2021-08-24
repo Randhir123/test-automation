@@ -1,0 +1,17 @@
+{
+  "threshold" : "${threshold}",
+  "parameters" : {
+    "nik" : "${nik}",
+    "full_name" : "${full_name}",
+    "dob" : "${dob}",
+    "phone_no" : "${phone_no}",
+    "email" : "${email}",
+    "mother_maiden_name": "${mother_maiden_name}",
+    "family_card_no" : "${family_card_no}",
+    "address" : "${address}",
+    "village": "${village}",
+    "district": "${district}",
+    "city" : "${city}",
+    "province" : "${province}"
+  }
+}
