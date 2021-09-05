@@ -1,4 +1,4 @@
-package idverify.steps;
+package microservice1.steps;
 
 import static util.Util.jsonTemplate;
 import static util.Util.stringFromFile;
@@ -209,8 +209,8 @@ public class IDVerifySteps {
         world.scenarioContext.put("response", response);
     }
 
-    @When("request is submitted for face match")
-    public void submitForFaceMatch() {
+    @When("request is submitted for face match to Dukcapil")
+    public void submitForFaceMatchDukcapil() {
         String accessToken = world.scenarioContext.get("accessToken").toString();
         String payload = world.scenarioContext.get("requestStr").toString();
         String mock = world.scenarioContext.get("mock").toString();
@@ -227,6 +227,28 @@ public class IDVerifySteps {
                 .contentType(ContentType.JSON)
                 .when().post(envConfig.getProperty("idverify-service_url")
                         + envConfig.getProperty("idverify-face_match_api"));
+
+        world.scenarioContext.put("response", response);
+    }
+
+    @When("request is submitted for face match to Portal")
+    public void submitForFaceMatchPortal() {
+        String accessToken = world.scenarioContext.get("accessToken").toString();
+        String payload = world.scenarioContext.get("requestStr").toString();
+        String mock = world.scenarioContext.get("mock").toString();
+        String dblk = world.scenarioContext.get("dblk").toString();
+        String productId = world.scenarioContext.get("productId").toString();
+
+        Response response = request
+                .accept(ContentType.JSON)
+                .header("Authorization", "Bearer " + accessToken)
+                .header("X-Product-Id", productId)
+                .queryParam("mock", mock)
+                .queryParam("dblk", dblk)
+                .body(payload)
+                .contentType(ContentType.JSON)
+                .when().post(envConfig.getProperty("idverify-service_url")
+                        + envConfig.getProperty("idverify-face_match_local_api"));
 
         world.scenarioContext.put("response", response);
     }
@@ -257,18 +279,33 @@ public class IDVerifySteps {
     }
 
     @When("status is checked")
-    public void checkStatus() {
+    public void checkStatus() throws InterruptedException {
         String accessToken = world.scenarioContext.get("accessToken").toString();
         String productId = world.scenarioContext.get("productId").toString();
         String statusUrl = world.scenarioContext.get("location").toString();
 
-        request = RequestSpecificationFactory.getInstance(world);
-        Response response = request
-                .accept(ContentType.JSON)
-                .header("Authorization", "Bearer " + accessToken)
-                .header("X-Product-Id", productId)
-                .when().get(envConfig.getProperty("idverify-service_url")
-                        + statusUrl);
+        Response response = null;
+        do {
+            request = RequestSpecificationFactory.getInstance(world);
+            response = request
+                    .accept(ContentType.JSON)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .header("X-Product-Id", productId)
+                    .when().get(envConfig.getProperty("idverify-service_url")
+                            + statusUrl);
+
+            if (response.then().extract().statusCode() == 200) {
+                String responseString = response.then().extract().asString();
+                String message = new JSONObject(responseString).getJSONObject("data").getString("message");
+                if ("IN_PROGRESS".equals(message)) {
+                    Thread.sleep(1000);
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        } while (true);
 
         world.scenarioContext.put("status_response", response);
     }
