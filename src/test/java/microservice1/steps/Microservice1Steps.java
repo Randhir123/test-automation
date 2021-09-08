@@ -70,14 +70,14 @@ public class Microservice1Steps {
     @Given("a person with demographic details")
     public void getDemogLiteData(@Transpose DataTable dataTable) throws IOException {
         List<Map<String, String>> data = dataTable.asMaps(String.class, String.class);
-        String nik = data.get(0).get("adhar_id");
+        String adharId = data.get(0).get("adhar_id");
         String fullName = data.get(0).get("full_name");
         String dob = data.get(0).get("dob");
         String phoneNo = data.get(0).get("phone_no");
         String email = data.get(0).get("email");
 
         Map<String, Object> valuesToTemplate = new HashMap<>();
-        valuesToTemplate.put("adhar_id", nik);
+        valuesToTemplate.put("adhar_id", adharId);
         valuesToTemplate.put("full_name", fullName);
         valuesToTemplate.put("dob", dob);
         valuesToTemplate.put("phone_no", phoneNo);
